@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jade 💘</title>
+  <style>
+    :root {
+      --bg1: #06030a;
+      --bg2: #12061a;
+      --card: rgba(255,255,255,.06);
+      --border: rgba(255,255,255,.14);
+      --txt: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --yes: #ff3b8d;
+      --yes2:#ff7bbd;
+      --no: #2b2b2f;
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      color: var(--txt);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background:
+        radial-gradient(1200px 800px at 20% 15%, rgba(255, 59, 141, .18), transparent 60%),
+        radial-gradient(1100px 700px at 85% 70%, rgba(124, 92, 255, .18), transparent 55%),
+        linear-gradient(140deg, var(--bg1), var(--bg2));
+      overflow: hidden;
+    }
+
+    /* floating hearts */
+    .heart {
+      position: absolute;
+      width: 14px; height: 14px;
+      transform: rotate(45deg);
+      opacity: .35;
+      animation: floatUp linear forwards;
+      filter: drop-shadow(0 8px 18px rgba(255,59,141,.25));
+    }
+    .heart::before, .heart::after {
+      content: "";
+      position: absolute;
+      width: 14px; height: 14px;
+      background: rgba(255, 59, 141, .55);
+      border-radius: 50%;
+    }
+    .heart { background: rgba(255, 59, 141, .55); }
+    .heart::before { left: -7px; top: 0; }
+    .heart::after  { left: 0; top: -7px; }
+    @keyframes floatUp {
+      from { transform: translateY(30px) rotate(45deg); }
+      to   { transform: translateY(-120vh) rotate(45deg); }
+    }
+
+    .card {
+      width: min(560px, calc(100vw - 28px));
+      padding: 26px 22px;
+      border-radius: 22px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    /* faux "logo album vibe" (pas un logo réel) */
+    .albumVibe {
+      display: grid;
+      gap: 6px;
+    }
+    .albumVibe .label {
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .albumVibe .title {
+      font-size: 18px;
+      letter-spacing: .06em;
+      font-weight: 700;
+      background: linear-gradient(90deg, rgba(255,123,189,.95), rgba(124,92,255,.9));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .albumVibe .date {
+      font-size: 12px;
+      color: rgba(255,255,255,.78);
+    }
+
+    /* weed leaf icon (générique) */
+    .leaf {
+      width: 42px; height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(34, 255, 149, .08);
+      border: 1px solid rgba(34, 255, 149, .22);
+    }
+    .leaf svg { width: 26px; height: 26px; opacity: .95; }
+
+    h1 {
+      margin: 8px 0 10px;
+      font-size: clamp(24px, 5vw, 34px);
+      line-height: 1.1;
+    }
+    p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .stage {
+      position: relative;
+      height: 140px;
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      margin-top: 14px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      padding: 10px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      transition: transform .12s ease, filter .12s ease;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    #yesBtn {
+      background: linear-gradient(90deg, var(--yes), var(--yes2));
+      color: #14000a;
+      box-shadow: 0 10px 25px rgba(255,59,141,.25);
+    }
+    #yesBtn:hover { transform: translateY(-1px) scale(1.02); }
+
+    #noBtn {
+      position: absolute; /* important pour le "fuis" */
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.88);
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    }
+    #noBtn:hover { filter: brightness(1.08); }
+
+    .footer {
+      margin-top: 16px;
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(0,0,0,.55);
+      padding: 18px;
+    }
+    .modal.open { display: grid; }
+    .modal .box {
+      width: min(520px, 100%);
+      border-radius: 22px;
+      background: rgba(15, 6, 22, .92);
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: var(--shadow);
+      padding: 22px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+    .box h2 { margin: 0 0 8px; font-size: 26px; }
+    .box p { margin: 0 0 14px; }
+    .box .ok {
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="top">
+      <div class="albumVibe">
+        <div class="label">VIBE ALBUM</div>
+        <div class="title">Midnight R&B Mood</div>
+        <div class="date">Sortie le 13 • Valentine le 14 💘</div>
+      </div>
+      <div class="leaf" title="logo weed (générique)">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3c1.6 2.9 2.2 5.8 2 8.6 2.2-1.5 4.4-2.5 7-2.7-1.5 2.3-3.7 4.2-6.4 5.2 2.5.3 4.5 1.2 6.4 2.7-2.6.2-4.8 1.2-7 2.7.2 2.8-.4 5.7-2 8.5-1.6-2.8-2.2-5.7-2-8.5-2.2-1.5-4.4-2.5-7-2.7 1.9-1.5 3.9-2.4 6.4-2.7-2.7-1-4.9-2.9-6.4-5.2 2.6.2 4.8 1.2 7 2.7-.2-2.8.4-5.7 2-8.6Z"
+                stroke="rgba(34,255,149,.95)" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M12 10v11" stroke="rgba(34,255,149,.75)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <h1>Jade… tu veux être ma Valentine ? 💝</h1>
+    <p>Promis c’est juste une petite question. (Et oui, le bouton “Non” est… un peu timide 😅)</p>
+
+    <div class="stage" id="stage">
+      <div class="buttons">
+        <button id="yesBtn">OUI 💘</button>
+        <button id="noBtn">NON 🙃</button>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>✨ 14 février</span>
+      <span>🖤 mood: doux + malicieux</span>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="box">
+      <h2>YESSSS 💞</h2>
+      <p>Ok c’est officiel 😄 Rendez-vous le 14 ?</p>
+      <button class="ok" id="okBtn">C’est noté ✅</button>
+    </div>
+  </div>
+
+  <script>
+    const stage = document.getElementById("stage");
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const modal = document.getElementById("modal");
+    const okBtn = document.getElementById("okBtn");
+
+    // Place initiale du bouton NON
+    function placeNoButtonInitial() {
+      const rect = stage.getBoundingClientRect();
+      // Position approximative à droite
+      const x = rect.width * 0.62;
+      const y = rect.height * 0.55;
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top  = `${y}px`;
+    }
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function moveNoButtonAway(fromX, fromY) {
+      const rect = stage.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      // coord relatives dans la stage
+      const relX = fromX - rect.left;
+      const relY = fromY - rect.top;
+
+      // limites pour garder le bouton dans la zone
+      const padding = 10;
+      const maxX = rect.width - btnRect.width - padding;
+      const maxY = rect.height - btnRect.height - padding;
+
+      // Choisir une nouvelle position "loin" du pointeur
+      let newX, newY, tries = 0;
+      do {
+        newX = rand(padding, Math.max(padding, maxX));
+        newY = rand(padding, Math.max(padding, maxY));
+        tries++;
+        // distance mini
+      } while (Math.hypot(newX - relX, newY - relY) < 140 && tries < 25);
+
+      noBtn.style.left = `${newX}px`;
+      noBtn.style.top  = `${newY}px`;
+    }
+
+    // Desktop: le NON fuit quand on approche
+    stage.addEventListener("mousemove", (e) => {
+      const btn = noBtn.getBoundingClientRect();
+      const dist = Math.hypot(
+        e.clientX - (btn.left + btn.width / 2),
+        e.clientY - (btn.top + btn.height / 2)
+      );
+      if (dist < 120) moveNoButtonAway(e.clientX, e.clientY);
+    });
+
+    // Mobile: le NON fuit au toucher / au tap
+    noBtn.addEventListener("touchstart", (e) => {
+      const t = e.touches[0];
+      moveNoButtonAway(t.clientX, t.clientY);
+      e.preventDefault();
+    }, { passive: false });
+
+    // Et si jamais elle arrive à cliquer : il fuit aussi 😄
+    noBtn.addEventListener("click", (e) => {
+      moveNoButtonAway(e.clientX, e.clientY);
+    });
+
+    yesBtn.addEventListener("click", () => {
+      modal.classList.add("open");
+      burstHearts();
+    });
+
+    okBtn.addEventListener("click", () => {
+      modal.classList.remove("open");
+    });
+
+    // petits coeurs qui montent
+    function burstHearts() {
+      for (let i = 0; i < 18; i++) {
+        const h = document.createElement("div");
+        h.className = "heart";
+        const left = rand(5, 95);
+        const duration = rand(4, 9);
+        const delay = Math.random() * 0.35;
+        h.style.left = left + "vw";
+        h.style.bottom = "-20px";
+        h.style.animationDuration = duration + "s";
+        h.style.animationDelay = delay + "s";
+        h.style.opacity = (Math.random() * 0.25 + 0.18).toFixed(2);
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), (duration + delay) * 1000 + 200);
+      }
+    }
+
+    // init
+    window.addEventListener("load", placeNoButtonInitial);
+    window.addEventListener("resize", placeNoButtonInitial);
+  </script>
+</body>
+</html>
