@@ -105,29 +105,35 @@ button{
   text-align:center;
   box-shadow:0 20px 60px rgba(0,0,0,.6);
 }
+
+  .modal .box{
+  animation: pop .35s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(.9);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="card">
-  <h1>Jade 💚</h1>
-  <p>Will you be my Valentine?</p>
-  <p><strong>We’re gonna smoke weed on Saturday and make some very bad decisions together.</strong> 🌿</p>
-
-  <div class="stage" id="stage">
-    <button id="yes">YES 💚</button>
-    <button id="no">NO 🙃</button>
-  </div>
-</div>
-
 <div class="modal" id="modal">
   <div class="box">
-    <h2>Perfect 💚</h2>
-    <p>Saturday is officially booked.</p>
-    <button onclick="modal.classList.remove('open')">OK</button>
+    <h2>LET’S GO 💚</h2>
+    <img src="party.jpg" alt="party" style="
+      width:100%;
+      border-radius:16px;
+      margin:12px 0;
+      box-shadow:0 10px 30px rgba(0,0,0,.5);
+    ">
+    <p>Saturday energy unlocked 🌿</p>
+    <button onclick="modal.classList.remove('open')">OK 😏</button>
   </div>
 </div>
+
 
 <script>
 const stage=document.getElementById("stage");
