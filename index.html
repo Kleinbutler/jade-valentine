@@ -50,7 +50,7 @@ h1{
 }
 
 p{
-  margin:0 0 20px;
+  margin:0 0 18px;
   line-height:1.5;
   font-size:16px;
   opacity:.9;
@@ -61,8 +61,17 @@ p{
   height:140px;
   border-radius:18px;
   border:1px dashed rgba(255,255,255,.18);
+  background:rgba(255,255,255,.03);
   display:grid;
   place-items:center;
+  overflow:hidden;
+}
+
+.buttons{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:center;
 }
 
 button{
@@ -85,6 +94,7 @@ button{
   background:rgba(255,255,255,.08);
   color:white;
   border:1px solid rgba(255,255,255,.2);
+  box-shadow:0 10px 22px rgba(0,0,0,.25);
 }
 
 .modal{
@@ -93,20 +103,21 @@ button{
   display:none;
   place-items:center;
   background:rgba(0,0,0,.6);
+  padding:18px;
 }
 
 .modal.open{display:grid}
 
 .modal .box{
+ ・・・
+
   background:#061f1b;
   border:1px solid rgba(127,255,212,.25);
   border-radius:22px;
   padding:24px;
   text-align:center;
   box-shadow:0 20px 60px rgba(0,0,0,.6);
-}
-
-  .modal .box{
+  width:min(520px,100%);
   animation: pop .35s ease;
 }
 
@@ -114,11 +125,23 @@ button{
   from{transform:scale(.9);opacity:0}
   to{transform:scale(1);opacity:1}
 }
-
 </style>
 </head>
 
 <body>
+
+<div class="card">
+  <h1>Jade 💚</h1>
+  <p>Will you be my Valentine?</p>
+  <p><strong>We’re gonna smoke weed on Saturday and make some very bad decisions together.</strong> 🌿</p>
+
+  <div class="stage" id="stage">
+    <div class="buttons">
+      <button id="yes">YES 💚</button>
+      <button id="no">NO 🙃</button>
+    </div>
+  </div>
+</div>
 
 <div class="modal" id="modal">
   <div class="box">
@@ -130,44 +153,59 @@ button{
       box-shadow:0 10px 30px rgba(0,0,0,.5);
     ">
     <p>Saturday energy unlocked 🌿</p>
-    <button onclick="modal.classList.remove('open')">OK 😏</button>
+    <button id="ok">OK 😏</button>
   </div>
 </div>
 
-
 <script>
-const stage=document.getElementById("stage");
-const no=document.getElementById("no");
-const yes=document.getElementById("yes");
-const modal=document.getElementById("modal");
+const stage = document.getElementById("stage");
+const no    = document.getElementById("no");
+const yes   = document.getElementById("yes");
+const modal = document.getElementById("modal");
+const ok    = document.getElementById("ok");
 
 function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
 
-function move(x,y){
-  const r=stage.getBoundingClientRect();
-  const b=no.getBoundingClientRect();
-  const maxX=r.width-b.width-10;
-  const maxY=r.height-b.height-10;
-  let nx,ny;
-  do{
-    nx=rand(10,maxX);
-    ny=rand(10,maxY);
-  }while(Math.hypot(nx-(x-r.left),ny-(y-r.top))<120);
-  no.style.left=nx+"px";
-  no.style.top=ny+"px";
+function moveNoButtonAway(fromX, fromY){
+  const r = stage.getBoundingClientRect();
+  const b = no.getBoundingClientRect();
+
+  const relX = fromX - r.left;
+  const relY = fromY - r.top;
+
+  const padding = 10;
+  const maxX = r.width - b.width - padding;
+  const maxY = r.height - b.height - padding;
+
+  let nx, ny, tries = 0;
+  do {
+    nx = rand(padding, Math.max(padding, maxX));
+    ny = rand(padding, Math.max(padding, maxY));
+    tries++;
+  } while (Math.hypot(nx - relX, ny - relY) < 120 && tries < 25);
+
+  no.style.left = nx + "px";
+  no.style.top  = ny + "px";
 }
 
-stage.addEventListener("mousemove",e=>{
-  const b=no.getBoundingClientRect();
-  if(Math.hypot(e.clientX-(b.left+b.width/2),e.clientY-(b.top+b.height/2))<120){
-    move(e.clientX,e.clientY);
-  }
+stage.addEventListener("mousemove", (e) => {
+  const b = no.getBoundingClientRect();
+  const dist = Math.hypot(
+    e.clientX - (b.left + b.width/2),
+    e.clientY - (b.top + b.height/2)
+  );
+  if (dist < 120) moveNoButtonAway(e.clientX, e.clientY);
 });
 
-no.addEventListener("click",e=>move(e.clientX,e.clientY));
-yes.addEventListener("click",()=>modal.classList.add("open"));
+no.addEventListener("click", (e) => moveNoButtonAway(e.clientX, e.clientY));
+yes.addEventListener("click", () => modal.classList.add("open"));
+ok.addEventListener("click", () => modal.classList.remove("open"));
 
-window.onload=()=>{no.style.left="60%";no.style.top="55%";}
+window.addEventListener("load", () => {
+  // position initiale du NO
+  no.style.left = "60%";
+  no.style.top  = "55%";
+});
 </script>
 
 </body>
